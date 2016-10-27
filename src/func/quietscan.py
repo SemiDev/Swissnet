@@ -5,7 +5,7 @@ active_ips = []
 bssid = '' 
 
 def quietscan(networkmac):
-    os.system('sudo airmon-ng start wlan0') 
+    os.system('sudo airmon-ng start wlan0 > /dev/null') 
 
     global bssid
     bssid = networkmac

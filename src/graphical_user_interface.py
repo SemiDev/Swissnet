@@ -42,6 +42,7 @@ class run_graphical_interface():
         ipscanimage = tkinter.PhotoImage(file='resources/images/ipscan.png')
         portscanimage = tkinter.PhotoImage(file='resources/images/portscan.png')
         lookupimage = tkinter.PhotoImage(file='resources/images/lookup.png')
+        quietscanimage = None
 
         #Sniffers Page [Packet Sniffer]
         packetsnifferimage = tkinter.PhotoImage(file='resources/images/packetsniffer.png')
@@ -57,17 +58,18 @@ class run_graphical_interface():
         poisondesc = ["Send spoofed ARP packets to VICTIM, so that the VICTIM beleives you are HOST",
             "Overflow a network switch's [VICTIM's] MAC table, causing all traffic to flood out all ports. Use the Packet Sniffer to pick up this traffic"]
 
-        scanlist = [ipscanimage,portscanimage,lookupimage]
-        scandesc = ["Scan for all IPs currentlty on the network",
-            "Scan ports 1 to MAXPORT of specified VICTIM to see which are open",
-            "Lookup information about HOST"]
+        scanlist = [ipscanimage,portscanimage,lookupimage,quietscanimage]
+        scandesc = ["Scan for all IPs currentlty on the network. NOTE: This method is fast, but not quiet and your IP will be recorded",
+            "Scan ports 1 to MAXPORT of specified VICTIM to see which are open. NOTE: This method is not quiet and your IP will be recorded",
+            "Lookup information about HOST",
+            "Quietly scan for IPs connected to BSSID by monitoring frames. This way, no packets will be sent."]
 
         sniffdesc = ["Sniff for incoming Packets and display packet info"]
 
         #Creating Pages:
         self.dos = custompage(self.height,self.button_width,self.width,4,doslist,dosdesc,['reflect','synflood','udpflood','dhcpstarvation'])
         self.poison = custompage(self.height,self.button_width,self.width,2,poisonlist,poisondesc,['arppoison','mactableoverflow'])
-        self.scan = custompage(self.height,self.button_width,self.width,3,scanlist,scandesc,['ipscan','portscan','lookup'])
+        self.scan = custompage(self.height,self.button_width,self.width,4,scanlist,scandesc,['ipscan','portscan','lookup','quietscan'])
         self.sniff = custompage(self.height,self.button_width,self.width,1,[packetsnifferimage],sniffdesc,['packetsniffer'])
 
         self.main = mainpage(self.height,self.button_width)

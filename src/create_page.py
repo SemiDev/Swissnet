@@ -12,6 +12,7 @@ from func.lookup import lookup
 from func.ping_of_death import ping_of_death
 from func.mactableoverflow import mactableoverflow
 from func.DHCPstarvation import DHCPstarvation
+from func.quietscan import quietscan
 
 THREAD_COUNT = 300
 
@@ -77,11 +78,14 @@ class custompage:
         description.place(x=610,y=150)
         self.globaldesc = description
     
-        if id not in ["dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
+        if id not in ["quietscan","dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
             textinput = self.__create_base_layout(1,"Victim")
             self.__runbutton(partial(self._do_command,id,textinput))
         elif id == "packetsniffer":
             textinput = self.__create_base_layout(1,"Filter")
+            self.__runbutton(partial(self._do_command,id,textinput))
+        elif id == "quietscan":
+            textinput = self.__create_base_layout(1,"BSSID")
             self.__runbutton(partial(self._do_command,id,textinput))
         elif id == "lookup":
             textinput = self.__create_base_layout(1,"Host")
@@ -179,3 +183,6 @@ class custompage:
             sniff_packets(inp)
         elif id == 'dhcpstarvation':
             DHCPstarvation()
+        elif id == 'quietscan':
+            input = textinput.get()
+            quietscan(input)

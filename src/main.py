@@ -7,6 +7,7 @@ import os
 from time import sleep
 
 def signal_handler(signal,frame):
+    os.system('sudo airmon-ng stop mon0 > /dev/null')
     print("[-] Program stopped")
     sys.exit()
     exit()
