@@ -42,7 +42,7 @@ class run_graphical_interface():
         ipscanimage = tkinter.PhotoImage(file='resources/images/ipscan.png')
         portscanimage = tkinter.PhotoImage(file='resources/images/portscan.png')
         lookupimage = tkinter.PhotoImage(file='resources/images/lookup.png')
-        quietscanimage = None
+        quietscanimage = tkinter.PhotoImage(file='resources/images/quietscan.png') 
 
         #Sniffers Page [Packet Sniffer]
         packetsnifferimage = tkinter.PhotoImage(file='resources/images/packetsniffer.png')
@@ -62,7 +62,7 @@ class run_graphical_interface():
         scandesc = ["Scan for all IPs currentlty on the network. NOTE: This method is fast, but not quiet and your IP will be recorded",
             "Scan ports 1 to MAXPORT of specified VICTIM to see which are open. NOTE: This method is not quiet and your IP will be recorded",
             "Lookup information about HOST",
-            "Quietly scan for IPs connected to BSSID by monitoring frames. This way, no packets will be sent."]
+            "Quietly scan for IPs connected to BSSID by monitoring frames. This way, no packets will be sent. Plus, you do not need to be connnected to the network for this to work"]
 
         sniffdesc = ["Sniff for incoming Packets and display packet info"]
 
