@@ -32,8 +32,8 @@ def run_command_line(args):
         active_ips = scan_network(args.verbose)
         ips_been_scanned = True
         if args.portscan_ips:
-            for name, alias, addr in active_ips:
-                portscan(addr[0],0,verbose)
+            for name, hwaddr, addr in active_ips:
+                portscan(addr,0,verbose)
         if args.reflect:
             reflection(args.reflect,active_ips)
 

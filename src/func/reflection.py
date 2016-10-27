@@ -6,7 +6,7 @@ def reflection(victim,active_ips):
     icmp_threads = []
     send_icmp = []
 
-    for name,alias,addr in active_ips:
+    for name,hwaddr,addr in active_ips:
         if addr[0] == victim:
             print("[+] Victim Succesfully removed from IPs to send packets to")
         else:

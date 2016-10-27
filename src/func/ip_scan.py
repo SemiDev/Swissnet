@@ -1,6 +1,7 @@
 import os
 import threading
 import socket
+from func.get_mac import get_mac
 
 def scan_network(verbose):
 
@@ -20,6 +21,8 @@ def scan_network(verbose):
         yn = input("[-] Error: Subnetmask not expected. Do you wish to continue? y/n")
         if yn == 'n' or yn == 'N': 
             exit(1)
+        ipr = ipr.split(".")
+        ipr = ipr[0] +"."+ ipr[1] +"."+ ipr[2] + "."+"%d"
 
     tc = 150
 
@@ -35,8 +38,11 @@ def scan_network(verbose):
 
     print('\n\n // Final Results // \n\n')
 
-    for name,alias,addr in active_ips:
-        print("Name: "+name+" IPv4: "+addr[0])
+    for name,hwaddr,addr in active_ips:
+        try:
+            print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+hwaddr)
+        except TypeError:
+            print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+'unknown')
 
     return active_ips
 
@@ -45,12 +51,18 @@ def __getips(step,start,quiet,ipr):
         ip = ipr % i
         exitstat = os.system('fping -q -t 50 '+ip)
         if not exitstat:
+            tmp = []
             try:
                 name, alias, addr = socket.gethostbyaddr(ip)
-                active_ips.append((name,alias,addr))
+                tmp.append(name)
             except:
-                active_ips.append(('unknown','unknown',[ip]))
+                tmp.append('unknown')
             finally:
+                tmp.append(get_mac(ip))
+                tmp.append(ip)
+                active_ips.append(tuple(tmp))
+
                 print("-"*30+"\n"); print("[+] "+ip+" Is Active ");print("\n"+"-"*30)
+
         elif exitstat and quiet: 
             print("[-] "+ip+" is inavtive ")
