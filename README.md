@@ -16,6 +16,22 @@ Then, navigate to the projects directory:
 
 ```$ cd Swissnet/ ```
 
-and Finally, use python to run the main.py file
+and Finally, use python to run the main.py file NOTE: Swissnet will not work without root privileges. 
 
 ```$ sudo python3 main.py```
+
+#CLI Usage
+
+To use the graphical interface, just execute the main.py file:
+
+```$ sudo python3 main.py```
+
+To use the command line interface, type in:
+
+```$ sudo python3 main.py -c [OPTIONS]```
+
+For example, to show the help menu, type in :
+
+```$sudo python3 main.py -c -h```
+
+
