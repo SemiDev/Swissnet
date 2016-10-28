@@ -10,7 +10,7 @@ def sniff_packets(filt,terminal=None):
         terminal.configure(text=terminal.cget("text")+'\n[+] Packet Sniffer Started\n[+] Filter: '+filt)
     if filt != 'all':
         while True:
-            a = sniff(filter=filt,count=1,prn=_show_pkt)
+            a = sniff(filter=filt,count=1,prn=lambda x:_show_pkt(x,terminal))
     else:
         while True:
             a = sniff(count=1,prn=lambda x:_show_pkt(x,terminal))

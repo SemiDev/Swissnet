@@ -34,7 +34,43 @@ class custompage:
         self.NUMBER_OF_BUTTONS = NOB 
         self.all_extra = []
         self.run_image = tkinter.PhotoImage(file='resources/images/run.png')
-        self.all_threads = []
+
+    def create_session_page(self,mainpage,terminal):
+        self.stop_image = tkinter.PhotoImage(file='resources/images/stop.png')
+        self.session_buttons = []
+
+        NUMBER_OF_BUTTONS = len(mainpage.all_threads)
+        try:
+            button_height = self.height/NUMBER_OF_BUTTONS
+        except ZeroDivisionError:
+            terminal['text'] += '\n\n[+] There are currently no processes running\n'
+
+        goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
+        gobackbutton = tkinter.Button(text="Go Back",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.hide)
+        gobackbutton.place(x=self.width-200,y=self.height/6*5,height=self.height/6,width=200)
+        self.all_buttons.append(gobackbutton)
+
+        for n,(id,t) in enumerate(mainpage.all_threads):
+            b = tkinter.Button(command=partial(self.session_base_layout,t,id,terminal,mainpage),highlightthickness=0,
+            borderwidth=0,activebackground='#553650',bg='#492f45',text=id,font=('Helvetica',17))
+            b.place(x=0,y=button_height*n-1,height=button_height,width=self.button_width)
+            self.all_buttons.append(b)
+
+    def session_base_layout(self,t,id,terminal,mainpage):
+
+        for object in self.session_buttons:
+            object.destroy()
+        for object in self.all_extra:
+            object.destroy()
+
+        self.stop_button = tkinter.Button(command=partial(self._stop_process,t,id,terminal,mainpage),image=self.stop_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')        
+        self.stop_button.place(x=self.button_width,y=self.height/6*5,height=self.height/6,width=200)
+        self.all_extra.append(self.stop_button)
+
+    def _stop_process(self,t,id,terminal,mainpage):
+        mainpage.all_threads.remove((id,t))
+        terminal['text'] += '\n\n[*] Process '+id+' successfully stopped'
+        self.hide()
 
     def create(self,mainpage):
 
@@ -47,7 +83,7 @@ class custompage:
 
         #Creating Buttons & Text
         for i in range(self.NUMBER_OF_BUTTONS):
-            button_object = tkinter.Button(command=partial(self.options, self.desclist[i-1],self.buttonlist[i-1]),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',image=self.imagelist[i-1])
+            button_object = tkinter.Button(command=partial(self.options, self.desclist[i-1],self.buttonlist[i-1],mainpage),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',image=self.imagelist[i-1])
             self.all_buttons.append(button_object)
 
         #Placing Buttons & Text
@@ -67,9 +103,12 @@ class custompage:
         except AttributeError:
             pass
 
-        self.gobackbutton.destroy()
+        try:
+            self.gobackbutton.destroy()
+        except AttributeError:
+            pass
 
-    def options(self,desc,id):
+    def options(self,desc,id,mainpage):
 
         for object in self.all_extra:
             object.destroy()
@@ -85,34 +124,34 @@ class custompage:
     
         if id not in ["ssidsniffer","quietscan","dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
             textinput = self.__create_base_layout(1,"Victim")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "packetsniffer":
             textinput = self.__create_base_layout(1,"Filter")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == 'ssidsniffer':
             textinput = self.__create_base_layout(0,'')
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "quietscan":
             textinput = self.__create_base_layout(1,"BSSID")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "lookup":
             textinput = self.__create_base_layout(1,"Host")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "dnslookup":
             textinput = self.__create_base_layout(1,"Host")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "synflood":
             textinput = self.__create_base_layout(2,("Victim","Port"))
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "arppoison":
             textinput = self.__create_base_layout(2,("Victim","Host"))
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id in ["ipscan","mactableoverflow","dhcpstarvation"]:
             textinput = self.__create_base_layout(0,"")
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == 'portscan':
             textinput = self.__create_base_layout(2,("Victim","MaxPort"))
-            self.__runbutton(partial(self._do_command,id,textinput))
+            self.__runbutton(partial(self._do_command,id,textinput,mainpage))
 
     def __create_base_layout(self,nargs,text):
 
@@ -160,7 +199,7 @@ class custompage:
             self.run_button.place(x=self.button_width,y=self.height/6*5,height=self.height/6,width=200)
             self.all_extra.append(self.run_button)
 
-    def _do_command(self,id,textinput):
+    def _do_command(self,id,textinput,mainpage):
         if id == 'reflect':
             input = textinput.get()
             self.__do_reflection(input,terminal=self.terminal)
@@ -197,16 +236,13 @@ class custompage:
         elif id == 'ssidsniffer':
             t = Thread(target=ssidsniffer,kwargs={'terminal' : self.terminal})
 
-        for i in self.all_threads:
-            identity, thread = i
-            thread._stop()
-            self.terminal.configure(text=self.terminal.cget('text')+'\n[-] Process '+identity+' has stopped \n[*] Currently Swissnet can only run one process at once. This feature is in developpement')
+        # for i in self.all_threads:
+        #     identity, thread = i
+        #     thread._stop()
+        #     self.terminal.configure(text=self.terminal.cget('text')+'\n[-] Process '+identity+' has stopped \n[*] Currently Swissnet can only run one process at once. This feature is in developpement')
     
-            self.all_threads = []
+        #     self.all_threads = []
 
-        try:
-            t.daemon=True
-            t.start()
-            self.all_threads.append((id,t))
-        except:
-            pass
+        t.daemon=True
+        t.start()
+        mainpage.all_threads.append((id,t))

@@ -79,9 +79,10 @@ class run_graphical_interface():
         self.poison = custompage(self.height,self.button_width,self.width,2,poisonlist,poisondesc,['arppoison','mactableoverflow'],self.terminal)
         self.scan = custompage(self.height,self.button_width,self.width,4,scanlist,scandesc,['ipscan','portscan','lookup','quietscan'],self.terminal)
         self.sniff = custompage(self.height,self.button_width,self.width,2,snifflist,sniffdesc,['packetsniffer','ssidsniffer'],self.terminal)
+        self.session = custompage(self.height,self.button_width,self.width,0,None,None,None,self.terminal)
 
         self.main = mainpage(self.height,self.button_width)
-        self.main.create_mainpage(self.dos,self.poison,self.scan,self.sniff)
+        self.main.create_mainpage(self.dos,self.poison,self.scan,self.sniff,self.session,self.terminal)
 
         #Starting Main Window
         self.root.mainloop()
