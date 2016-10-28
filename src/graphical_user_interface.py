@@ -1,6 +1,7 @@
 import tkinter
 from mainpage import mainpage
 from create_page import custompage
+from terminal import create_terminal
 
 class run_graphical_interface():
     def __init__(self):
@@ -9,14 +10,14 @@ class run_graphical_interface():
         self.root = tkinter.Tk()
         # self.root.wait_visibility(self.root)
         # self.root.wm_attributes('-alpha',0.9)
-        self.root.geometry("900x400")
+        self.root.geometry("900x700")
         self.root.title("Swissnet")
         self.root.configure(bg='#2e1a2b')
         self.root.update()
         self.root.resizable(width=0,height=0)
 
         #Defining Widget Info
-        self.height = self.root.winfo_height()
+        self.height = self.root.winfo_height()-300
         self.width = self.root.winfo_width()
         self.button_height = int(self.height/4)
         self.button_width = int(self.width/3)
@@ -46,6 +47,9 @@ class run_graphical_interface():
 
         #Sniffers Page [Packet Sniffer]
         packetsnifferimage = tkinter.PhotoImage(file='resources/images/packetsniffer.png')
+        ssidsnifferimage = tkinter.PhotoImage(file='resources/images/ssidsniffer.png')
+
+        snifflist = [packetsnifferimage,ssidsnifferimage]
 
 
         #Defining lists and IDs for pages:
@@ -64,13 +68,17 @@ class run_graphical_interface():
             "Lookup information about HOST",
             "Quietly scan for IPs connected to BSSID by monitoring frames. This way, no packets will be sent. Plus, you do not need to be connnected to the network for this to work"]
 
-        sniffdesc = ["Sniff for incoming Packets and display packet info"]
+        sniffdesc = ["Sniff for incoming Packets and display packet info","Sniff for wireless networks in your area"]
+
+        #Creating Terminal
+
+        self.terminal = create_terminal(self.root.winfo_height()-400,self.height,self.width)
 
         #Creating Pages:
-        self.dos = custompage(self.height,self.button_width,self.width,4,doslist,dosdesc,['reflect','synflood','udpflood','dhcpstarvation'])
-        self.poison = custompage(self.height,self.button_width,self.width,2,poisonlist,poisondesc,['arppoison','mactableoverflow'])
-        self.scan = custompage(self.height,self.button_width,self.width,4,scanlist,scandesc,['ipscan','portscan','lookup','quietscan'])
-        self.sniff = custompage(self.height,self.button_width,self.width,1,[packetsnifferimage],sniffdesc,['packetsniffer'])
+        self.dos = custompage(self.height,self.button_width,self.width,4,doslist,dosdesc,['reflect','synflood','udpflood','dhcpstarvation'],self.terminal)
+        self.poison = custompage(self.height,self.button_width,self.width,2,poisonlist,poisondesc,['arppoison','mactableoverflow'],self.terminal)
+        self.scan = custompage(self.height,self.button_width,self.width,4,scanlist,scandesc,['ipscan','portscan','lookup','quietscan'],self.terminal)
+        self.sniff = custompage(self.height,self.button_width,self.width,2,snifflist,sniffdesc,['packetsniffer','ssidsniffer'],self.terminal)
 
         self.main = mainpage(self.height,self.button_width)
         self.main.create_mainpage(self.dos,self.poison,self.scan,self.sniff)

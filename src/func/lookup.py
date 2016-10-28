@@ -2,20 +2,35 @@ import os
 import socket
 from func.get_mac import get_mac
 
-def lookup(host):
+def lookup(host,terminal=None):
     exitstat = os.system('fping '+host)
     if not exitstat:
         try:
             name, alias, addr = socket.gethostbyaddr(host.strip())
             if not alias: 
                 alias = 'unknown'
-            print("Hostname // "+name+" | Aliases // "+str(alias)+" | Address // "+addr[0]+" | HWAddress // "+get_mac(host))
+            if terminal == None:
+                print("Hostname // "+name+" | Aliases // "+str(alias)+" | Address // "+addr[0]+" | HWAddress // "+get_mac(host))
+            else:
+                terminal.configure(text=terminal.cget("text")+"\nHostname // "+name+" | Aliases // "+str(alias)+" | Address // "+addr[0]+" | HWAddress // "+get_mac(host))
         except:
-            print("[*] Could not find a hostname")
+            if terminal == None:
+                print("[*] Could not find a hostname")
+            else:
+                terminal.configure(text=terminal.cget("text")+'\n[*] Could not find a hostname')
             try:
-                print("Address // "+host+" | HWAddress // "+get_mac(host))
+                if terminal == None:
+                    print("Address // "+host+" | HWAddress // "+get_mac(host))
+                else:
+                    terminal.configure(text=terminal.cget("text")+"\n Address // "+host+" | HWAddress // "+get_mac(host))
             except TypeError:
-                print("[-] Could not find a mac address. IP may not be connected to network")
-                print("Address // "+host)
+                if terminal == None:
+                    print("[-] Could not find a mac address")
+                    print("Address // "+host)
+                else:
+                    terminal.configure(text=terminal.cget("text")+'\n[-] Could not find a mac address\nAddress // '+host)
     else:
-        print("[-] Error: Host not found")
+        if terminal == None:
+            print("[-] Error: Host not found")
+        else:
+            terminal.configure(text=terminal.cget("text")+'\n[-] Error: Host not found')

@@ -2,6 +2,7 @@ import signal
 import argparse
 from command_line import run_command_line
 from graphical_user_interface import run_graphical_interface
+import threading
 import sys
 import os
 from time import sleep
@@ -10,7 +11,6 @@ def signal_handler(signal,frame):
     os.system('sudo airmon-ng stop mon0 > /dev/null')
     print("[-] Program stopped")
     sys.exit()
-    exit()
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -49,9 +49,6 @@ def main():
         print('[+] Running Command Line')
         run_command_line(args)
     else:
-        print("[+] All output from the swissnet tools will appear here")
-        print("[*] Note: Use the '-c' option to use swissnet in command line mode\n")
-        sleep(2)
         run_graphical_interface()
 
 if __name__ == '__main__':

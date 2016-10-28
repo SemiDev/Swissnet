@@ -1,5 +1,7 @@
 from __future__ import print_function
 import tkinter
+import threading
+import sys
 
 class mainpage:
     def __init__(self,height,button_width):
@@ -38,3 +40,4 @@ class mainpage:
         #Exit Button
         self.exit = tkinter.Button(text="Exit",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=exit)
         self.exit.place(x=700,y=self.height/6*5,height=self.height/6,width=200)
+

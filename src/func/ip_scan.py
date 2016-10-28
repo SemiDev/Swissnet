@@ -3,7 +3,7 @@ import threading
 import socket
 from func.get_mac import get_mac
 
-def scan_network(verbose):
+def scan_network(verbose,terminal = None):
 
     all_threads = []
     global active_ips
@@ -27,9 +27,9 @@ def scan_network(verbose):
     tc = 150
 
     for i in range(tc):
-        ip = threading.Thread(target=__getips,args=(tc,i,verbose,ipr))
+        ip = threading.Thread(target=__getips,args=(tc,i,verbose,ipr,terminal))
         ip.daemon = True
-        ip.start()
+        ip.start() 
         all_threads.append(ip)
         i+=1
 
@@ -40,13 +40,19 @@ def scan_network(verbose):
 
     for name,hwaddr,addr in active_ips:
         try:
-            print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+hwaddr)
+            if terminal == None:
+                print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+hwaddr)
+            else:
+                terminal.configure(text=terminal.cget("text")+'\nName // '+name+' IPv4 // '+addr+' HWAddress // '+hwaddr)
         except TypeError:
-            print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+'unknown')
+            if terminal == None:
+                print("Name // "+name+" IPv4 // "+addr+' HWAddress // '+'unknown')
+            else:
+                terminal.configure(text=terminal.cget("text")+'\nName // '+name+' IPv4 // '+addr+' HWAddress // unknown')
 
     return active_ips
 
-def __getips(step,start,quiet,ipr):
+def __getips(step,start,quiet,ipr,terminal):
     for i in range(start,255,step):
         ip = ipr % i
         exitstat = os.system('fping -q -t 50 '+ip)
@@ -62,7 +68,15 @@ def __getips(step,start,quiet,ipr):
                 tmp.append(ip)
                 active_ips.append(tuple(tmp))
 
-                print("-"*30+"\n"); print("[+] "+ip+" Is Active ");print("\n"+"-"*30)
+                if terminal == None:
+                    print("-"*30+"\n"); 
+                    print("[+] "+ip+" Is Active ");
+                    print("\n"+"-"*30)
+                else:
+                    terminal.configure(text=terminal.cget("text")+"\n\n[+] "+ip+" Is Active \n")
 
         elif exitstat and quiet: 
-            print("[-] "+ip+" is inavtive ")
+            if terminal == None:
+                print("[-] "+ip+" is inavtive ")
+            else:
+                terminal.configure(text=terminal.cget("text")+'\n[-] '+ip+' is inactive ')

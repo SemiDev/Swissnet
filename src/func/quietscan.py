@@ -4,13 +4,21 @@ import os
 active_ips = []
 bssid = '' 
 
-def quietscan(networkmac):
+def quietscan(networkmac,trm=None):
+
+    global terminal
+    terminal = trm
+
     os.system('sudo airmon-ng start wlan0 > /dev/null') 
 
     global bssid
     bssid = networkmac
+    
+    if terminal == None:
+        print('[+] Monitoring for activity on '+bssid)
+    else:
+        terminal.configure(text=terminal.cget("text")+'\n[+] Monitoring fot activity on '+bssid)
 
-    print('[+] Monitoring for activity on '+bssid)
     sniff(iface='mon0',prn=_filter_packet)
 
 def _filter_packet(pkt):
@@ -19,7 +27,10 @@ def _filter_packet(pkt):
             if pkt.addr2 not in active_ips:
                 active_ips.append(pkt.addr2)
                 try:
-                    print('[+] HWAddress // '+pkt.addr2+' BSSID // '+pkt.addr3)
+                    if terminal == None:
+                        print('[+] HWAddress // '+pkt.addr2+' BSSID // '+pkt.addr3)
+                    else:
+                        terminal.configure(text=terminal.cget("text")+'\n[+] HWAddress // '+pkt.addr2+' BSSID // '+pkt.addr3)
                 except:
                     pass
 

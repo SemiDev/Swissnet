@@ -1,4 +1,5 @@
 from functools import partial
+from threading import Thread
 import tkinter
 from func.portscan import portscan
 from func.ip_scan import scan_network
@@ -13,12 +14,15 @@ from func.ping_of_death import ping_of_death
 from func.mactableoverflow import mactableoverflow
 from func.DHCPstarvation import DHCPstarvation
 from func.quietscan import quietscan
+from func.ssidsniffer import ssidsniffer
 
 THREAD_COUNT = 300
 
 class custompage:
-    def __init__(self,height,button_width,width,NOB,imagelist,desclist = [],buttonlist=[]):
+    #NOB: Number of buttons
+    def __init__(self,height,button_width,width,NOB,imagelist,desclist = [],buttonlist=[],terminal=None):
         #Defining Extra variables
+        self.terminal = terminal
         self.height = height
         self.button_width = button_width
         self.width = width
@@ -30,10 +34,11 @@ class custompage:
         self.NUMBER_OF_BUTTONS = NOB 
         self.all_extra = []
         self.run_image = tkinter.PhotoImage(file='resources/images/run.png')
+        self.all_threads = []
 
     def create(self,mainpage):
 
-        button_height = self.height/self.NUMBER_OF_BUTTONS
+        button_height = self.height/self.NUMBER_OF_BUTTONS 
         self.mainpage = mainpage
 
         goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
@@ -45,7 +50,7 @@ class custompage:
             button_object = tkinter.Button(command=partial(self.options, self.desclist[i-1],self.buttonlist[i-1]),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',image=self.imagelist[i-1])
             self.all_buttons.append(button_object)
 
-        #Placing Buttons & Tect
+        #Placing Buttons & Text
         for i, b in enumerate(self.all_buttons):
             b.place(x=0,y=button_height*i-1,height=button_height,width=self.button_width)
 
@@ -78,11 +83,14 @@ class custompage:
         description.place(x=610,y=150)
         self.globaldesc = description
     
-        if id not in ["quietscan","dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
+        if id not in ["ssidsniffer","quietscan","dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
             textinput = self.__create_base_layout(1,"Victim")
             self.__runbutton(partial(self._do_command,id,textinput))
         elif id == "packetsniffer":
             textinput = self.__create_base_layout(1,"Filter")
+            self.__runbutton(partial(self._do_command,id,textinput))
+        elif id == 'ssidsniffer':
+            textinput = self.__create_base_layout(0,'')
             self.__runbutton(partial(self._do_command,id,textinput))
         elif id == "quietscan":
             textinput = self.__create_base_layout(1,"BSSID")
@@ -140,9 +148,12 @@ class custompage:
 
             return (textinput,textinput2)
 
-    def __do_reflection(self,victim):
-        active_ips = scan_network(False)
-        reflection(victim,active_ips)
+    def __do_reflection(self,victim,terminal = None):
+        active_ips = scan_network(False,terminal = terminal)
+        terminal.configure(text=terminal.cget('text') + '\n [+] Scanning for IPs on the network...')
+        t = Thread(target=reflection,args=(victim,active_ips),kwargs={'terminal' : terminal})
+        t.daemon = True
+        t.start()
     
     def __runbutton(self,command):
             self.run_button = tkinter.Button(command=command,image=self.run_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')        
@@ -152,37 +163,50 @@ class custompage:
     def _do_command(self,id,textinput):
         if id == 'reflect':
             input = textinput.get()
-            self.__do_reflection(input)
+            self.__do_reflection(input,terminal=self.terminal)
         elif id == 'udpflood':
             input = textinput.get()
-            UDPflood(input,True,THREAD_COUNT)
+            t = Thread(target=UDPflood,args=(input,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
         elif id == 'synflood':
             input1 = textinput[0].get()
             input2 = textinput[1].get() 
-            SYNflood(input1,input2,True,THREAD_COUNT)
+            t = Thread(target=SYNflood,args=(input1,input2,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
         elif id == 'arppoison':
             input1 = textinput[0].get()
             input2 = textinput[1].get() 
-            arpspoof(input1,input2)
-        elif id == 'arppoison':
-            input = textinput.get()
-            arpspoof(input,True)
+            t = Thread(target=arpspoof, args=(input1,input2), kwargs={'terminal' : self.terminal})
         elif id == 'mactableoverflow':
-            mactableoverflow(THREAD_COUNT,True)
+            t = Thread(target=mactableoverflow,args=(THREAD_COUNT,True),kwargs={'terminal' : self.terminal})
         elif id == 'lookup':
             input = textinput.get()
-            lookup(input)
+            t = Thread(target=lookup,args=(input,),kwargs={'terminal' : self.terminal})
         elif id == 'ipscan':
-            scan_network(False)
+           t = Thread(target=scan_network,args=(False,),kwargs={'terminal' : self.terminal})
         elif id == 'portscan':
             input = textinput[0].get()
             input2 = textinput[1].get()
-            portscan(input,input2,True)
+            t = Thread(target=portscan,args=(input,input2,True),kwargs={'terminal' : self.terminal})
         elif id == 'packetsniffer':
             inp = textinput.get()
-            sniff_packets(inp)
+            t = Thread(target=sniff_packets,args=(inp,),kwargs={'terminal' : self.terminal})
         elif id == 'dhcpstarvation':
-            DHCPstarvation()
+            t = Thread(target=DHCPstarvation,kwargs={'terminal' : self.terminal})
         elif id == 'quietscan':
             input = textinput.get()
-            quietscan(input)
+            t = Thread(target=quietscan,args=(input),kwargs={'terminal' : self.terminal})
+        elif id == 'ssidsniffer':
+            t = Thread(target=ssidsniffer,kwargs={'terminal' : self.terminal})
+
+        for i in self.all_threads:
+            identity, thread = i
+            thread._stop()
+            self.terminal.configure(text=self.terminal.cget('text')+'\n[-] Process '+identity+' has stopped \n[*] Currently Swissnet can only run one process at once. This feature is in developpement')
+    
+            self.all_threads = []
+
+        try:
+            t.daemon=True
+            t.start()
+            self.all_threads.append((id,t))
+        except:
+            pass
