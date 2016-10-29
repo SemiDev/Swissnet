@@ -1,5 +1,5 @@
 # Introduction
-Swissnet is the swiss army knife of net utilities and penetration testing. By malforming packets, or poisoning caches, you too can gain complete power over your network. Swissnet has an easy to use graphical interface, and a CLI, for which ever fits your needs. DoS an entire network with DHCP Starvation, or quietly listen in to confedential conversations with ARP poisoning. Plus, Swissnet has built in tools to keep your IP confidential from your victim. With Swissnet at the ease of your disposal, you can gain control over your network, easily, swiftly, and quietly.
+Swissnet is the swiss army knife of net utilities and penetration testing. By malforming packets, or poisoning caches, you too can gain complete power over your network. Swissnet has an easy to use graphical interface, so you can work quickly. DoS an entire network with DHCP Starvation, or quietly listen in to confedential conversations with ARP poisoning. Plus, Swissnet has built in tools to keep your IP confidential from your victim. With Swissnet at the ease of your disposal, you can gain control over your network, easily, swiftly, and quietly.
 
 #Installation
 First, install python3 by running:
@@ -26,12 +26,5 @@ To use the graphical interface, just execute the main.py file:
 
 ```$ sudo python3 main.py```
 
-To use the command line interface, type in:
-
-```$ sudo python3 main.py -c [OPTIONS]```
-
-For example, to show the help menu, type in :
-
-```$sudo python3 main.py -c -h```
 
 
