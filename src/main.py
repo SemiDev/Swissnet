@@ -42,6 +42,8 @@ def main():
     parser.add_argument("-d","--dhcpstarvation",action="store_true",help="Starve your current network of it's DHCP resources, DoSing all clients connected to the network")
     parser.add_argument("-D","--deauth",nargs=3,metavar=("BSSID","VICTIM_MAC","IFACE"),help="Send 802.11 deauthentication packets to VICTIM on network BSSID on interface IFACE")
     parser.add_argument("-n","--nestea",metavar=("VICTIM"),help="A classic packet fragmentation error that crashes some versions of windows under Windows XP")
+    parser.add_argument("-A","--ssidsniffer",action="store_true",help="Sniff for wireless networks in your area")
+    parser.add_argument("-q","--quietscan",nargs=1,metavar="BSSID",help="Monitors for activity on BSSID effectivley scanning the network without sending any packets to the recipient. Plus, you do not need to be connected to the network to run this program.")
     parser.add_argument("-c","--commandline",action="store_true",help="\nProgram wont use a graphic interface, but will instead be a command line program.\n")
     args = parser.parse_args()
 

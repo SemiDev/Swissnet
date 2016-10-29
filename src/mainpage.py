@@ -2,6 +2,7 @@ from __future__ import print_function
 import tkinter
 import threading
 import sys
+import os
 
 class mainpage:
     def __init__(self,height,button_width):
@@ -43,6 +44,10 @@ class mainpage:
         self.sessions.place(x=0,y=button_height*4,height=button_height,width=self.button_width)
 
         #Exit Button
-        self.exit = tkinter.Button(text="Exit",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=exit)
+        self.exit = tkinter.Button(text="Exit",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.stop_program)
         self.exit.place(x=700,y=self.height/6*5,height=self.height/6,width=200)
+
+    def stop_program(self):
+        os.system('sudo airmon-ng stop mon0 > /dev/null')
+        sys.exit()
 

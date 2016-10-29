@@ -12,6 +12,8 @@ from func.ping_of_death import ping_of_death
 from func.mactableoverflow import mactableoverflow
 from func.nestea import nestea
 from func.DHCPstarvation import DHCPstarvation
+from func.ssidsniffer import ssidsniffer
+from func.quietscan import quietscan
 
 def run_command_line(args):
 
@@ -80,3 +82,9 @@ def run_command_line(args):
     
     if args.nestea:
         nestea(args.nestea)
+
+    if args.ssidsniffer:
+        ssidsniffer()
+
+    if args.quietscan:
+        quietscan(args.quietscan)

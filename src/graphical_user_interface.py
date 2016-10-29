@@ -72,7 +72,7 @@ class run_graphical_interface():
 
         #Creating Terminal
 
-        self.terminal = create_terminal(self.root.winfo_height()-400,self.height,self.width)
+        self.terminal = create_terminal(self.root,self.root.winfo_height()-400,self.height,self.width)
 
         #Creating Pages:
         self.dos = custompage(self.height,self.button_width,self.width,4,doslist,dosdesc,['reflect','synflood','udpflood','dhcpstarvation'],self.terminal)

@@ -43,7 +43,7 @@ class custompage:
         try:
             button_height = self.height/NUMBER_OF_BUTTONS
         except ZeroDivisionError:
-            terminal['text'] += '\n\n[+] There are currently no processes running\n'
+            terminal.write('\n\n[+] There are currently no processes running\n')
 
         goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
         gobackbutton = tkinter.Button(text="Go Back",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.hide)
@@ -69,7 +69,7 @@ class custompage:
 
     def _stop_process(self,t,id,terminal,mainpage):
         mainpage.all_threads.remove((id,t))
-        terminal['text'] += '\n\n[*] Process '+id+' successfully stopped'
+        terminal.write('\n\n[*] Process '+id+' successfully stopped')
         self.hide()
 
     def create(self,mainpage):
@@ -235,13 +235,6 @@ class custompage:
             t = Thread(target=quietscan,args=(input),kwargs={'terminal' : self.terminal})
         elif id == 'ssidsniffer':
             t = Thread(target=ssidsniffer,kwargs={'terminal' : self.terminal})
-
-        # for i in self.all_threads:
-        #     identity, thread = i
-        #     thread._stop()
-        #     self.terminal.configure(text=self.terminal.cget('text')+'\n[-] Process '+identity+' has stopped \n[*] Currently Swissnet can only run one process at once. This feature is in developpement')
-    
-        #     self.all_threads = []
 
         t.daemon=True
         t.start()
