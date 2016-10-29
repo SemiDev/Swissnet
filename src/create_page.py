@@ -31,7 +31,7 @@ class custompage:
         self.globaldesc = None
         self.desclist = desclist
         self.buttonlist=buttonlist
-        self.NUMBER_OF_BUTTONS = NOB 
+        self.NUMBER_OF_BUTTONS = NOB
         self.all_extra = []
         self.run_image = tkinter.PhotoImage(file='resources/images/run.png')
 
@@ -40,14 +40,16 @@ class custompage:
         self.session_buttons = []
 
         NUMBER_OF_BUTTONS = len(mainpage.all_threads)
-        try:
-            button_height = self.height/NUMBER_OF_BUTTONS
-        except ZeroDivisionError:
-            terminal.write('\n\n[+] There are currently no processes running\n')
 
         goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
         self.Sgobackbutton = tkinter.Button(text="Go Back",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.hide)
         self.Sgobackbutton.place(x=self.width-200,y=self.height/6*5,height=self.height/6,width=200)
+
+        try:
+            button_height = self.height/NUMBER_OF_BUTTONS
+        except ZeroDivisionError:
+            terminal.write('\n\n[+] There are currently no processes running\n')
+            self.hide()
 
         for n,(id,t) in enumerate(mainpage.all_threads):
             b = tkinter.Button(command=partial(self.session_base_layout,t,id,terminal,mainpage),highlightthickness=0,
@@ -62,7 +64,7 @@ class custompage:
         for object in self.all_extra:
             object.destroy()
 
-        self.stop_button = tkinter.Button(command=partial(self._stop_process,t,id,terminal,mainpage),image=self.stop_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')        
+        self.stop_button = tkinter.Button(command=partial(self._stop_process,t,id,terminal,mainpage),image=self.stop_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')
         self.stop_button.place(x=self.button_width,y=self.height/6*5,height=self.height/6,width=200)
         self.all_extra.append(self.stop_button)
 
@@ -75,7 +77,7 @@ class custompage:
 
     def create(self,mainpage):
 
-        button_height = self.height/self.NUMBER_OF_BUTTONS 
+        button_height = self.height/self.NUMBER_OF_BUTTONS
         self.mainpage = mainpage
 
         goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
@@ -119,20 +121,20 @@ class custompage:
         for object in self.all_extra:
             object.destroy()
 
-        try: 
+        try:
             self.globaldesc.destroy()
         except AttributeError:
             pass
-            
+
         description = tkinter.Label(text=desc,bg='#2e1a2b',wraplength=285,justify='right',font=("resources/fonts/trench100free",12))
         description.place(x=610,y=150)
         self.globaldesc = description
-    
+
         if id not in ["ssidsniffer","quietscan","dhcpstarvation","portscan","arppoison","ipscan","lookup","mactableoverflow","synflood","packetsniffer"]:
             textinput = self.__create_base_layout(1,"Victim")
             self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == "packetsniffer":
-            textinput = self.__create_base_layout(1,"Filter")
+            textinput = self.__create_base_layout(2,("Filter","IFace"))
             self.__runbutton(partial(self._do_command,id,textinput,mainpage))
         elif id == 'ssidsniffer':
             textinput = self.__create_base_layout(0,'')
@@ -162,7 +164,7 @@ class custompage:
     def __create_base_layout(self,nargs,text):
 
         if nargs==1:
-            label = tkinter.Button(text=text,font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')        
+            label = tkinter.Button(text=text,font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')
             label.place(x = self.button_width+20,y=250)
 
             textinput = tkinter.Entry(width=12,bg='#886883',highlightthickness=0,borderwidth=0,font=('Arial'))
@@ -174,10 +176,10 @@ class custompage:
             return textinput
 
         elif nargs==2:
-            label = tkinter.Button(text=text[0],font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')        
+            label = tkinter.Button(text=text[0],font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')
             label.place(x = self.button_width+20,y=230)
 
-            label2 = tkinter.Button(text=text[1],font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')        
+            label2 = tkinter.Button(text=text[1],font=('Helvatica',14),highlightthickness=0,borderwidth=0,activebackground='#492f45',bg='#492f45')
             label2.place(x = self.button_width+20,y=270)
 
             textinput = tkinter.Entry(width=12,bg='#886883',highlightthickness=0,borderwidth=0,font=('Arial'))
@@ -194,53 +196,53 @@ class custompage:
             return (textinput,textinput2)
 
     def __do_reflection(self,victim,terminal = None):
-        active_ips = scan_network(False,terminal = terminal)
-        terminal.configure(text=terminal.cget('text') + '\n [+] Scanning for IPs on the network...')
-        t = Process(target=reflection,args=(victim,active_ips),kwargs={'terminal' : terminal})
-        t.daemon = True
-        t.start()
-    
+        terminal.write('\n [+] Scanning for IPs on the network...\n[*] NOTE: The program might freeze up for a couple seconds when this is being performed')
+        active_ips = scan_network(False,terminal)
+        t = Process(target=reflection,args=(victim,active_ips, terminal))
+        return t
+
     def __runbutton(self,command):
-            self.run_button = tkinter.Button(command=command,image=self.run_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')        
+            self.run_button = tkinter.Button(command=command,image=self.run_image,highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45')
             self.run_button.place(x=self.button_width,y=self.height/6*5,height=self.height/6,width=200)
             self.all_extra.append(self.run_button)
 
     def _do_command(self,id,textinput,mainpage):
         if id == 'reflect':
             input = textinput.get()
-            self.__do_reflection(input,terminal=self.terminal)
+            t = self.__do_reflection(input,terminal=self.terminal)
         elif id == 'udpflood':
             input = textinput.get()
-            t = Process(target=UDPflood,args=(input,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
+            t = Process(target=UDPflood,args=(input,True,THREAD_COUNT,self.terminal))
         elif id == 'synflood':
             input1 = textinput[0].get()
-            input2 = textinput[1].get() 
-            t = Process(target=SYNflood,args=(input1,input2,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
+            input2 = textinput[1].get()
+            t = Process(target=SYNflood,args=(input1,input2,True,THREAD_COUNT,self.terminal))
         elif id == 'arppoison':
             input1 = textinput[0].get()
-            input2 = textinput[1].get() 
-            t = Process(target=arpspoof, args=(input1,input2), kwargs={'terminal' : self.terminal})
+            input2 = textinput[1].get()
+            t = Process(target=arpspoof, args=(input1,input2,self.terminal))
         elif id == 'mactableoverflow':
-            t = Process(target=mactableoverflow,args=(THREAD_COUNT,True),kwargs={'terminal' : self.terminal})
+            t = Process(target=mactableoverflow,args=(THREAD_COUNT,True,self.terminal))
         elif id == 'lookup':
             input = textinput.get()
-            t = Process(target=lookup,args=(input,),kwargs={'terminal' : self.terminal})
+            t = Process(target=lookup,args=(input,self.terminal))
         elif id == 'ipscan':
-           t = Process(target=scan_network,args=(False,),kwargs={'terminal' : self.terminal})
+           t = Process(target=scan_network,args=(False, self.terminal))
         elif id == 'portscan':
             input = textinput[0].get()
             input2 = textinput[1].get()
-            t = Process(target=portscan,args=(input,input2,True),kwargs={'terminal' : self.terminal})
+            t = Process(target=portscan,args=(input,input2,True,self.terminal))
         elif id == 'packetsniffer':
-            inp = textinput.get()
-            t = Process(target=sniff_packets,args=(inp,self.terminal))
+            input = textinput[0].get()
+            input2 = textinput[1].get()
+            t = Process(target=sniff_packets,args=(input,input2,self.terminal))
         elif id == 'dhcpstarvation':
-            t = Process(target=DHCPstarvation,kwargs={'terminal' : self.terminal})
+            t = Process(target=DHCPstarvation,args=(self.terminal,))
         elif id == 'quietscan':
             input = textinput.get()
-            t = Process(target=quietscan,args=(input),kwargs={'terminal' : self.terminal})
+            t = Process(target=quietscan,args=(input,self.terminal))
         elif id == 'ssidsniffer':
-            t = Process(target=ssidsniffer,kwargs={'terminal':self.terminal})
+            t = Process(target=ssidsniffer,args=(self.terminal,))
 
         t.daemon = True
         t.start()

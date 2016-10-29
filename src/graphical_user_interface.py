@@ -2,6 +2,7 @@ import tkinter
 from mainpage import mainpage
 from create_page import custompage
 from terminal import create_terminal
+import pickle
 
 class run_graphical_interface():
     def __init__(self):
@@ -33,17 +34,17 @@ class run_graphical_interface():
         udpfloodimage = tkinter.PhotoImage(file='resources/images/udpflood.png')
         #landdosimage = tkinter.PhotoImage(file='resources/images/landdos.png')
         #podimage = tkinter.PhotoImage(file='resources/images/pod.png')
-        dhcpimage = tkinter.PhotoImage(file='resources/images/dhcpstarvation.png') 
+        dhcpimage = tkinter.PhotoImage(file='resources/images/dhcpstarvation.png')
 
         #Poison Page [ARP Poison, MAC Table Overflow]:
-        arppoisonimage = tkinter.PhotoImage(file='resources/images/arppoison.png') 
+        arppoisonimage = tkinter.PhotoImage(file='resources/images/arppoison.png')
         mactableoverflowimage = tkinter.PhotoImage(file='resources/images/mactableoverflow.png')
 
         #Scanners Page [IP Scan, Portscan, Lookup]:
         ipscanimage = tkinter.PhotoImage(file='resources/images/ipscan.png')
         portscanimage = tkinter.PhotoImage(file='resources/images/portscan.png')
         lookupimage = tkinter.PhotoImage(file='resources/images/lookup.png')
-        quietscanimage = tkinter.PhotoImage(file='resources/images/quietscan.png') 
+        quietscanimage = tkinter.PhotoImage(file='resources/images/quietscan.png')
 
         #Sniffers Page [Packet Sniffer]
         packetsnifferimage = tkinter.PhotoImage(file='resources/images/packetsniffer.png')

@@ -3,14 +3,12 @@ from func.spoof_addr import spoof_addr
 from func.random_mac import random_mac
 from time import sleep
 import threading
+import traceback
 
-def mactableoverflow(THREAD_COUNT,quiet,terminal = None):
+def mactableoverflow(THREAD_COUNT,quiet,terminal):
     try:
         all_threads=[]
-        if terminal == None:
-            print("[+] Overflowing MAC table...")
-        else:
-            terminal.write('\n[+] Overflowing MAC table')
+        terminal.write('\n[+] Overflowing MAC table')
         for i in range(int(THREAD_COUNT)):
             t = threading.Thread(target=__send_macs,args=(quiet,terminal))
             t.daemon=True
@@ -18,13 +16,11 @@ def mactableoverflow(THREAD_COUNT,quiet,terminal = None):
 
         for i in all_threads:
             i.start()
-        
+
         all_threads[0].join()
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()
 
 def __send_macs(quiet,terminal):
     try:
@@ -33,12 +29,7 @@ def __send_macs(quiet,terminal):
         while True:
             send(packet,verbose=0)
             if not quiet:
-                if terminal == None:
-                    print("[+] Packet successfully sent\n[+] Packet: "+packet.summary())     
-                else:
-                    terminal.write('\n[+] Packet successfully sent \n[+] Packet: '+packet.summary())
+                terminal.write('\n[+] Packet successfully sent \n[+] Packet: '+packet.summary())
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()

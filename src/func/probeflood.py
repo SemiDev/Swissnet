@@ -1,6 +1,7 @@
 from scapy.all import *
 from threading import Thread
 from random_mac import random_mac
+import traceback
 
 def proberequest(bssid):
 	print('[+] Flooding '+bssid+' with Probe Requests')

@@ -1,28 +1,19 @@
 from __future__ import print_function
 from scapy.all import *
+import traceback
 
-def sniff_packets(filt,terminal=None):
+def sniff_packets(filt,iface,terminal):
     try:
-
-        if terminal == None:
-            print("[+] Packet Sniffer Started")
-            print("[+] Filter: "+filt)
-        else:
-            terminal.write('\n[+] Packet Sniffer Started\n[+] Filter: '+filt)
+        terminal.write('\n[+] Packet Sniffer Started\n[+] Filter: '+filt)
         if filt != 'all':
             while True:
-                a = sniff(filter=filt,count=1,prn=lambda x:_show_pkt(x,terminal))
+                a = sniff(filter=filt,iface=iface,count=1,prn=lambda x:_show_pkt(x,terminal))
         else:
             while True:
-                a = sniff(count=1,prn=lambda x:_show_pkt(x,terminal))
+                a = sniff(count=1,iface=iface,prn=lambda x:_show_pkt(x,terminal))
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()
 
 def _show_pkt(pkt,terminal):
-    if terminal == None:
-        pkt.summary()
-    else:
-        terminal.write('\n'+str(pkt.summary()))
+    terminal.write('\n'+str(pkt.summary()))

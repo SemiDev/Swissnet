@@ -1,26 +1,22 @@
 from __future__ import print_function
 from scapy.all import *
 import os
+import traceback
 
 all_ssids = []
 
-def ssidsniffer(terminal = None):
+def ssidsniffer(terminal):
     try:
         term = terminal
 
-        if terminal == None:
-            print('[+] Sniffing for wireless SSIDs')
-        else:
-            terminal.write('\n[+] Sniffing for wireless SSIDs')
+        terminal.write('\n[+] Sniffing for wireless SSIDs')
 
         os.system('sudo airmon-ng start wlan0 > /dev/null')
         sniff(iface='mon0',prn= lambda x:_parse_pkt(x,terminal))
 
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
+        terminal.write('\n'+str(s))
+        traceback.print_exc()
 
 def _parse_pkt(pkt,terminal):
     try:
@@ -31,17 +27,9 @@ def _parse_pkt(pkt,terminal):
                     all_ssids.append(ssid)
                     bssid = pkt[0].addr3
                     channel = str(ord(pkt[0][Dot11Elt:3].info))
-                    if terminal == None:
-                        print('[+] BSSID // '+bssid+' | SSID '+ssid+' | Channel // '+channel)
-                    else:
-                        terminal.write('\n[+] BSSID // '+bssid+' | SSID '+ssid+' | Channel // '+channel)
+                    terminal.write('\n[+] BSSID // '+bssid+' | SSID '+ssid+' | Channel // '+channel)
             except AttributeError:
                 pass
     except Exception as s:
-        if terminal == None:
-            print(s)
-        else:
-            terminal.write('\n'+str(s))
-            
-        
-        
+        terminal.write('\n'+str(s))
+        traceback.print_exc()
