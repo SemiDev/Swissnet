@@ -1,5 +1,5 @@
 from functools import partial
-from threading import Thread
+from KThread import KThread as Process
 import tkinter
 from func.portscan import portscan
 from func.ip_scan import scan_network
@@ -67,6 +67,8 @@ class custompage:
         self.all_extra.append(self.stop_button)
 
     def _stop_process(self,t,id,terminal,mainpage):
+
+        t.kill()
         mainpage.all_threads.remove((id,t))
         terminal.write('\n\n[*] Process '+id+' successfully stopped')
         self.hide()
@@ -194,7 +196,7 @@ class custompage:
     def __do_reflection(self,victim,terminal = None):
         active_ips = scan_network(False,terminal = terminal)
         terminal.configure(text=terminal.cget('text') + '\n [+] Scanning for IPs on the network...')
-        t = Thread(target=reflection,args=(victim,active_ips),kwargs={'terminal' : terminal})
+        t = Process(target=reflection,args=(victim,active_ips),kwargs={'terminal' : terminal})
         t.daemon = True
         t.start()
     
@@ -209,37 +211,37 @@ class custompage:
             self.__do_reflection(input,terminal=self.terminal)
         elif id == 'udpflood':
             input = textinput.get()
-            t = Thread(target=UDPflood,args=(input,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
+            t = Process(target=UDPflood,args=(input,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
         elif id == 'synflood':
             input1 = textinput[0].get()
             input2 = textinput[1].get() 
-            t = Thread(target=SYNflood,args=(input1,input2,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
+            t = Process(target=SYNflood,args=(input1,input2,True,THREAD_COUNT),kwargs={'terminal':self.terminal})
         elif id == 'arppoison':
             input1 = textinput[0].get()
             input2 = textinput[1].get() 
-            t = Thread(target=arpspoof, args=(input1,input2), kwargs={'terminal' : self.terminal})
+            t = Process(target=arpspoof, args=(input1,input2), kwargs={'terminal' : self.terminal})
         elif id == 'mactableoverflow':
-            t = Thread(target=mactableoverflow,args=(THREAD_COUNT,True),kwargs={'terminal' : self.terminal})
+            t = Process(target=mactableoverflow,args=(THREAD_COUNT,True),kwargs={'terminal' : self.terminal})
         elif id == 'lookup':
             input = textinput.get()
-            t = Thread(target=lookup,args=(input,),kwargs={'terminal' : self.terminal})
+            t = Process(target=lookup,args=(input,),kwargs={'terminal' : self.terminal})
         elif id == 'ipscan':
-           t = Thread(target=scan_network,args=(False,),kwargs={'terminal' : self.terminal})
+           t = Process(target=scan_network,args=(False,),kwargs={'terminal' : self.terminal})
         elif id == 'portscan':
             input = textinput[0].get()
             input2 = textinput[1].get()
-            t = Thread(target=portscan,args=(input,input2,True),kwargs={'terminal' : self.terminal})
+            t = Process(target=portscan,args=(input,input2,True),kwargs={'terminal' : self.terminal})
         elif id == 'packetsniffer':
             inp = textinput.get()
-            t = Thread(target=sniff_packets,args=(inp,),kwargs={'terminal' : self.terminal})
+            t = Process(target=sniff_packets,args=(inp,self.terminal))
         elif id == 'dhcpstarvation':
-            t = Thread(target=DHCPstarvation,kwargs={'terminal' : self.terminal})
+            t = Process(target=DHCPstarvation,kwargs={'terminal' : self.terminal})
         elif id == 'quietscan':
             input = textinput.get()
-            t = Thread(target=quietscan,args=(input),kwargs={'terminal' : self.terminal})
+            t = Process(target=quietscan,args=(input),kwargs={'terminal' : self.terminal})
         elif id == 'ssidsniffer':
-            t = Thread(target=ssidsniffer,kwargs={'terminal' : self.terminal})
+            t = Process(target=ssidsniffer,kwargs={'terminal':self.terminal})
 
-        t.daemon=True
+        t.daemon = True
         t.start()
         mainpage.all_threads.append((id,t))
