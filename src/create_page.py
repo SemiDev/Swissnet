@@ -46,9 +46,8 @@ class custompage:
             terminal.write('\n\n[+] There are currently no processes running\n')
 
         goback_image = tkinter.PhotoImage(file='resources/images/gobackbutton.png')
-        gobackbutton = tkinter.Button(text="Go Back",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.hide)
-        gobackbutton.place(x=self.width-200,y=self.height/6*5,height=self.height/6,width=200)
-        self.all_buttons.append(gobackbutton)
+        self.Sgobackbutton = tkinter.Button(text="Go Back",font=("Helvatica",16),highlightthickness=0,borderwidth=0,activebackground='#553650',bg='#492f45',command=self.hide)
+        self.Sgobackbutton.place(x=self.width-200,y=self.height/6*5,height=self.height/6,width=200)
 
         for n,(id,t) in enumerate(mainpage.all_threads):
             b = tkinter.Button(command=partial(self.session_base_layout,t,id,terminal,mainpage),highlightthickness=0,
@@ -105,6 +104,11 @@ class custompage:
 
         try:
             self.gobackbutton.destroy()
+        except AttributeError:
+            pass
+
+        try:
+            self.Sgobackbutton.destroy()
         except AttributeError:
             pass
 
