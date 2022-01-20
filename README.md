@@ -1,7 +1,9 @@
 # Introduction
-Swissnet is the swiss army knife of net utilities and penetration testing. By malforming packets, or poisoning caches, you too can gain complete power over your network. Swissnet has an easy to use graphical interface, so you can work quickly. DoS an entire network with DHCP Starvation, or quietly listen in to confedential conversations with ARP poisoning. Plus, Swissnet has built in tools to keep your IP confidential from your victim. With Swissnet at the ease of your disposal, you can gain control over your network, easily, swiftly, and quietly.
 
-#Installation
+Swissnet is an old, now defunct penetration-testing project. Its purpose was to explore network programming, sockets, and application design. Although its code is massively outdated, and does not reflect my programming abilities as of today, it's still a fun project.
+
+## Installation
+
 First, install python3 by running:
 
 On Debian-Based systems:
