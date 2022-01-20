@@ -10,7 +10,6 @@ def my_function(terminal):
     #Encapsulate the entire function in a try except statement so that we can print errors to screen
     try:
         do_something()
-        ddos_ur_mom()
         #This is very important if you want to print something to screen
         #Printing to GUI
         #NOTE: The write function does not come with a built in newline like print does, so you have to add that yourself
