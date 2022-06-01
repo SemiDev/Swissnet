@@ -16,7 +16,7 @@ Then, clone the repo:
 
 Then, navigate to the projects directory:
 
-```$ cd Swissnet/ ```
+```$ cd Swissnet/src ```
 
 and Finally, use python to run the main.py file NOTE: Swissnet will not work without root privileges. 
 
